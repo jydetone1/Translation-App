@@ -12,7 +12,7 @@ import {
   MaterialCommunityIcons,
 } from '@expo/vector-icons';
 import colors from '../../utils/colors';
-function HomeScreen() {
+function HomeScreen(props) {
   const [text, setText] = useState('');
   const [textResult, setTextResult] = useState('');
   return (
@@ -20,7 +20,11 @@ function HomeScreen() {
       <View style={styles.languageWrapper}>
         <TouchableOpacity
           style={styles.languageButton}
-          onPress={() => console.log('push')}
+          onPress={() =>
+            props.navigation.navigate('Language', {
+              title: 'Translate from',
+            })
+          }
         >
           <Text style={styles.languageText}>English</Text>
         </TouchableOpacity>
@@ -31,7 +35,11 @@ function HomeScreen() {
 
         <TouchableOpacity
           style={styles.languageButton}
-          onPress={() => console.log('push')}
+          onPress={() =>
+            props.navigation.navigate('Language', {
+              title: 'Translate to',
+            })
+          }
         >
           <Text style={styles.languageText}>Spanish</Text>
         </TouchableOpacity>
@@ -77,6 +85,50 @@ function HomeScreen() {
               }
             />
           </View>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.historyWrapper}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => console.log('push')}
+        >
+          <Text style={styles.buttonText}>Translate</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => console.log('push')}
+        >
+          <Text style={styles.buttonText}>Clear</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => console.log('push')}
+        >
+          <Text style={styles.buttonText}>Swap</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => console.log('push')}
+        >
+          <Text style={styles.buttonText}>History</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => console.log('push')}
+        >
+          <Text style={styles.buttonText}>Saved</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => console.log('push')}
+        >
+          <Text style={styles.buttonText}>Settings</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -148,6 +200,12 @@ const styles = StyleSheet.create({
     color: colors.primary,
     flex: 1,
     marginHorizontal: 20,
+  },
+
+  historyWrapper: {
+    backgroundColor: colors.greyBackground,
+    flex: 1,
+    padding: 10,
   },
 });
 

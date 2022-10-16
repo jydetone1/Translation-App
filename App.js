@@ -3,11 +3,14 @@ import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+// import SafeAreaView from 'react-native-safe-area-view';
+
 import Ionicons from '@expo/vector-icons/Ionicons';
 import * as SplashScreen from 'expo-splash-screen';
 import HomeScreen from './src/screens/HomeScreen';
 import SavedScreen from './src/screens/SavedScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
+import LanguageScreen from './src/screens/LanguageScreen';
 import colors from './utils/colors';
 import * as Font from 'expo-font';
 
@@ -89,6 +92,7 @@ export default function App() {
   }
 
   return (
+    // <SafeAreaView>
     <NavigationContainer>
       <View onLayout={onLayout} style={{ flex: 1 }}>
         <Stack.Navigator
@@ -112,9 +116,25 @@ export default function App() {
               }}
             />
           </Stack.Group>
+
+          <Stack.Group
+            screenOptions={{
+              presentation: 'containedModal',
+              headerStyle: {
+                backgroundColor: '#fff',
+              },
+              headerTitleStyle: {
+                color: colors.textColor,
+              },
+              headerShadowVisible: false,
+            }}
+          >
+            <Stack.Screen name='Language' component={LanguageScreen} />
+          </Stack.Group>
         </Stack.Navigator>
       </View>
     </NavigationContainer>
+    // </SafeAreaView>
   );
 }
 
