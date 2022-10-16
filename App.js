@@ -1,13 +1,17 @@
+import React, { useState, useEffect, useCallback } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from '@expo/vector-icons/Ionicons';
-
+import * as SplashScreen from 'expo-splash-screen';
 import HomeScreen from './src/screens/HomeScreen';
 import SavedScreen from './src/screens/SavedScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
+import colors from './utils/colors';
+import * as Font from 'expo-font';
 
+SplashScreen.preventAutoHideAsync();
 const Tab = createBottomTabNavigator();
 const TabNavigator = () => {
   return (
@@ -36,12 +40,6 @@ const TabNavigator = () => {
         ],
         headerShown: false,
       })}
-      //set header Options for all screens
-
-      // tabBarOptions={{
-      //   activeTintColor: 'tomato',
-      //   inactiveTintColor: 'gray',
-      // }}
     >
       <Tab.Screen
         name='Home'
@@ -63,16 +61,54 @@ const TabNavigator = () => {
 };
 const Stack = createNativeStackNavigator();
 export default function App() {
+  const [appIsReady, setAppIsReady] = useState(false);
+
+  useEffect(() => {
+    async function prepare() {
+      try {
+        await Font.loadAsync({
+          Roboto: require('./assets/fonts/Roboto-Regular.ttf'),
+        });
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        setAppIsReady(true);
+      }
+    }
+    prepare();
+  }, []);
+
+  const onLayout = useCallback(async () => {
+    if (appIsReady) {
+      await SplashScreen.hideAsync();
+    }
+  }, [appIsReady]);
+
+  if (!appIsReady) {
+    return null;
+  }
+
   return (
     <NavigationContainer>
-      <View style={{ flex: 1 }}>
-        <Stack.Navigator>
+      <View onLayout={onLayout} style={{ flex: 1 }}>
+        <Stack.Navigator
+          screenOptions={{
+            headerTitleStyle: {
+              fontFamily: 'Roboto',
+              color: '#fff',
+            },
+
+            headerStyle: {
+              backgroundColor: colors.primary,
+            },
+          }}
+        >
           <Stack.Group>
             <Stack.Screen
               name='main'
               component={TabNavigator}
               options={{
-                title: 'Home',
+                title: 'Translator',
               }}
             />
           </Stack.Group>
