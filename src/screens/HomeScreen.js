@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
   TextInput,
+  ActivityIndicator,
 } from 'react-native';
 import {
   AntDesign,
@@ -13,12 +14,15 @@ import {
 } from '@expo/vector-icons';
 import colors from '../../utils/colors';
 import languages from '../../utils/languages';
+import { translate } from '../../utils/translate';
+
 function HomeScreen(props) {
   const params = props.route.params || {};
-  const [text, setText] = useState('');
+  const [enteredText, setEnteredText] = useState('');
   const [textResult, setTextResult] = useState('');
   const [languageTo, setLanguageTo] = useState('es');
   const [languageFrom, setLanguageFrom] = useState('en');
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (params.languageTo) {
@@ -28,6 +32,24 @@ function HomeScreen(props) {
       setLanguageFrom(params.languageFrom);
     }
   }, [params]);
+
+  const onSubmitLanguage = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const result = await translate(enteredText, languageFrom, languageTo);
+      if (!result) {
+        setTextResult('');
+        return;
+      }
+      const textValue = result.translated_text[result.to];
+      setTextResult(textValue);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [enteredText, languageTo, languageFrom]);
+
   return (
     <View style={styles.container}>
       <View style={styles.languageWrapper}>
@@ -67,21 +89,27 @@ function HomeScreen(props) {
           multiline
           placeholder='Type here to translate'
           style={styles.inputValue}
-          onChangeText={(text) => setText(text)}
+          onChangeText={(text) => setEnteredText(text)}
         />
 
         <TouchableOpacity
-          disabled={text === ''}
+          disabled={enteredText === ''}
           style={styles.transalateIcon}
-          onPress={() => console.log('push')}
+          onPress={isLoading ? undefined : onSubmitLanguage}
         >
-          <View>
-            <Ionicons
-              name='arrow-forward-circle'
-              size={24}
-              color={text !== '' ? colors.primary : colors.primaryDisabled}
-            />
-          </View>
+          {isLoading ? (
+            <ActivityIndicator size={'small'} color={colors.primary} />
+          ) : (
+            <View>
+              <Ionicons
+                name='arrow-forward-circle'
+                size={24}
+                color={
+                  enteredText !== '' ? colors.primary : colors.primaryDisabled
+                }
+              />
+            </View>
+          )}
         </TouchableOpacity>
       </View>
 

@@ -24,6 +24,7 @@ const CustomedHeaderButton = (props) => {
 function LanguageScreen({ navigation, route }) {
   const params = route.params || {};
   const { title, selected } = params;
+
   useEffect(() => {
     navigation.setOptions({
       title: title,
