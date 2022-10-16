@@ -16,6 +16,7 @@ import * as Font from 'expo-font';
 
 SplashScreen.preventAutoHideAsync();
 const Tab = createBottomTabNavigator();
+
 const TabNavigator = () => {
   return (
     <Tab.Navigator
@@ -63,6 +64,7 @@ const TabNavigator = () => {
   );
 };
 const Stack = createNativeStackNavigator();
+
 export default function App() {
   const [appIsReady, setAppIsReady] = useState(false);
 

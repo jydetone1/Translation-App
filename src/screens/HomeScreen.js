@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -12,9 +12,22 @@ import {
   MaterialCommunityIcons,
 } from '@expo/vector-icons';
 import colors from '../../utils/colors';
+import languages from '../../utils/languages';
 function HomeScreen(props) {
+  const params = props.route.params || {};
   const [text, setText] = useState('');
   const [textResult, setTextResult] = useState('');
+  const [languageTo, setLanguageTo] = useState('es');
+  const [languageFrom, setLanguageFrom] = useState('en');
+
+  useEffect(() => {
+    if (params.languageTo) {
+      setLanguageTo(params.languageTo);
+    }
+    if (params.languageFrom) {
+      setLanguageFrom(params.languageFrom);
+    }
+  }, [params]);
   return (
     <View style={styles.container}>
       <View style={styles.languageWrapper}>
@@ -23,10 +36,12 @@ function HomeScreen(props) {
           onPress={() =>
             props.navigation.navigate('Language', {
               title: 'Translate from',
+              selected: languageFrom,
+              mode: 'from',
             })
           }
         >
-          <Text style={styles.languageText}>English</Text>
+          <Text style={styles.languageText}>{languages[languageFrom]}</Text>
         </TouchableOpacity>
 
         <View style={styles.arrowRight}>
@@ -38,10 +53,12 @@ function HomeScreen(props) {
           onPress={() =>
             props.navigation.navigate('Language', {
               title: 'Translate to',
+              selected: languageTo,
+              mode: 'to',
             })
           }
         >
-          <Text style={styles.languageText}>Spanish</Text>
+          <Text style={styles.languageText}> {languages[languageTo]}</Text>
         </TouchableOpacity>
       </View>
 
@@ -70,7 +87,6 @@ function HomeScreen(props) {
 
       <View style={styles.outputWrapper}>
         <Text style={styles.outputValue}>{textResult}</Text>
-
         <TouchableOpacity
           disabled={textResult === ''}
           style={styles.transalateIcon}
@@ -85,50 +101,6 @@ function HomeScreen(props) {
               }
             />
           </View>
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.historyWrapper}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => console.log('push')}
-        >
-          <Text style={styles.buttonText}>Translate</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => console.log('push')}
-        >
-          <Text style={styles.buttonText}>Clear</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => console.log('push')}
-        >
-          <Text style={styles.buttonText}>Swap</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => console.log('push')}
-        >
-          <Text style={styles.buttonText}>History</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => console.log('push')}
-        >
-          <Text style={styles.buttonText}>Saved</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => console.log('push')}
-        >
-          <Text style={styles.buttonText}>Settings</Text>
         </TouchableOpacity>
       </View>
     </View>
