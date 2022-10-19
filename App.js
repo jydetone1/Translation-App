@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 // import SafeAreaView from 'react-native-safe-area-view';
+import { Provider } from 'react-redux';
+import store from './store/store';
 
 import Ionicons from '@expo/vector-icons/Ionicons';
 import * as SplashScreen from 'expo-splash-screen';
@@ -95,47 +97,49 @@ export default function App() {
 
   return (
     // <SafeAreaView>
-    <NavigationContainer>
-      <View onLayout={onLayout} style={{ flex: 1 }}>
-        <Stack.Navigator
-          screenOptions={{
-            headerTitleStyle: {
-              fontFamily: 'Roboto',
-              color: '#fff',
-            },
-
-            headerStyle: {
-              backgroundColor: colors.primary,
-            },
-          }}
-        >
-          <Stack.Group>
-            <Stack.Screen
-              name='main'
-              component={TabNavigator}
-              options={{
-                title: 'Translator',
-              }}
-            />
-          </Stack.Group>
-
-          <Stack.Group
+    <Provider store={store}>
+      <NavigationContainer>
+        <View onLayout={onLayout} style={{ flex: 1 }}>
+          <Stack.Navigator
             screenOptions={{
-              presentation: 'containedModal',
-              headerStyle: {
-                backgroundColor: '#fff',
-              },
               headerTitleStyle: {
-                color: colors.textColor,
+                fontFamily: 'Roboto',
+                color: '#fff',
               },
-              headerShadowVisible: false,
+
+              headerStyle: {
+                backgroundColor: colors.primary,
+              },
             }}
           >
-            <Stack.Screen name='Language' component={LanguageScreen} />
-          </Stack.Group>
-        </Stack.Navigator>
-      </View>
-    </NavigationContainer>
+            <Stack.Group>
+              <Stack.Screen
+                name='main'
+                component={TabNavigator}
+                options={{
+                  title: 'Translator',
+                }}
+              />
+            </Stack.Group>
+
+            <Stack.Group
+              screenOptions={{
+                presentation: 'containedModal',
+                headerStyle: {
+                  backgroundColor: '#fff',
+                },
+                headerTitleStyle: {
+                  color: colors.textColor,
+                },
+                headerShadowVisible: false,
+              }}
+            >
+              <Stack.Screen name='Language' component={LanguageScreen} />
+            </Stack.Group>
+          </Stack.Navigator>
+        </View>
+      </NavigationContainer>
+    </Provider>
     // </SafeAreaView>
   );
 }

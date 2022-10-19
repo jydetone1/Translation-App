@@ -15,6 +15,7 @@ import {
 import colors from '../../utils/colors';
 import languages from '../../utils/languages';
 import { translate } from '../../utils/translate';
+import * as Cliboard from 'expo-clipboard';
 
 function HomeScreen(props) {
   const params = props.route.params || {};
@@ -49,6 +50,10 @@ function HomeScreen(props) {
       setIsLoading(false);
     }
   }, [enteredText, languageTo, languageFrom]);
+
+  const copyToClipboard = useCallback(async () => {
+    await Cliboard.setStringAsync(textResult);
+  }, [textResult]);
 
   return (
     <View style={styles.container}>
@@ -118,7 +123,7 @@ function HomeScreen(props) {
         <TouchableOpacity
           disabled={textResult === ''}
           style={styles.transalateIcon}
-          onPress={() => console.log('push')}
+          onPress={copyToClipboard}
         >
           <View>
             <MaterialCommunityIcons
