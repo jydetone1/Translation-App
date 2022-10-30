@@ -1,12 +1,13 @@
 import axios from 'axios';
+import config from '../config';
 export const translate = async (text, languageFrom, languageTo) => {
   const options = {
     method: 'GET',
     url: 'https://nlp-translation.p.rapidapi.com/v1/translate',
     params: { text: text, to: languageTo, from: languageFrom },
     headers: {
-      'X-RapidAPI-Key': '51679299d7msh4292cdd8392f547p13ddcdjsne19e48fa8ab1',
-      'X-RapidAPI-Host': 'nlp-translation.p.rapidapi.com',
+      'X-RapidAPI-Key': config.rapidApiKey,
+      'X-RapidAPI-Host': config.rapidApiHost,
     },
   };
 
