@@ -6,6 +6,7 @@ import {
   View,
   TextInput,
   ActivityIndicator,
+  FlatList,
 } from 'react-native';
 import {
   AntDesign,
@@ -16,9 +17,36 @@ import colors from '../../utils/colors';
 import languages from '../../utils/languages';
 import { translate } from '../../utils/translate';
 import * as Cliboard from 'expo-clipboard';
+import { useDispatch, useSelector } from 'react-redux';
+import { addHistoryItem, setHistoryItems } from '../../store/historySlice';
+import TranslationResult from '../../components/TranslationResult';
+import uuid from 'react-native-uuid';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { setSavedItems } from '../../store/savedItemSlice';
 
+const getData = () => {
+  return async (dispatch) => {
+    try {
+      const value = await AsyncStorage.getItem('history');
+      if (value !== null) {
+        const history = JSON.parse(value);
+        dispatch(setHistoryItems({ items: history }));
+      }
+
+      const result = await AsyncStorage.getItem('savedItems');
+      if (result !== null) {
+        const savedItems = JSON.parse(result);
+        dispatch(setSavedItems({ items: savedItems }));
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+};
 function HomeScreen(props) {
   const params = props.route.params || {};
+  const dispatch = useDispatch();
+  const history = useSelector((state) => state.history.items);
   const [enteredText, setEnteredText] = useState('');
   const [textResult, setTextResult] = useState('');
   const [languageTo, setLanguageTo] = useState('es');
@@ -34,6 +62,21 @@ function HomeScreen(props) {
     }
   }, [params]);
 
+  useEffect(() => {
+    const saveHistory = async () => {
+      try {
+        await AsyncStorage.setItem('history', JSON.stringify(history));
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    saveHistory();
+  }, [history]);
+
+  useEffect(() => {
+    dispatch(getData());
+  }, [dispatch]);
+
   const onSubmitLanguage = useCallback(async () => {
     try {
       setIsLoading(true);
@@ -44,12 +87,17 @@ function HomeScreen(props) {
       }
       const textValue = result.translated_text[result.to];
       setTextResult(textValue);
+
+      const id = uuid.v4();
+      result.id = id;
+      result.dateTime = new Date().toISOString();
+      dispatch(addHistoryItem({ item: result }));
     } catch (error) {
       console.log(error);
     } finally {
       setIsLoading(false);
     }
-  }, [enteredText, languageTo, languageFrom]);
+  }, [enteredText, languageTo, languageFrom, dispatch]);
 
   const copyToClipboard = useCallback(async () => {
     await Cliboard.setStringAsync(textResult);
@@ -135,6 +183,16 @@ function HomeScreen(props) {
             />
           </View>
         </TouchableOpacity>
+      </View>
+
+      <View style={styles.historyWrapper}>
+        <FlatList
+          data={history.slice().reverse()}
+          renderItem={(itemData) => {
+            console.log('itemData', itemData);
+            return <TranslationResult itemId={itemData.item.id} />;
+          }}
+        />
       </View>
     </View>
   );

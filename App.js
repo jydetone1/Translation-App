@@ -3,7 +3,6 @@ import { StyleSheet, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-// import SafeAreaView from 'react-native-safe-area-view';
 import { Provider } from 'react-redux';
 import store from './store/store';
 
@@ -36,7 +35,7 @@ const TabNavigator = () => {
           return <Ionicons name={iconName} size={size} color={color} />;
         },
 
-        tabBarActiveTintColor: 'tomato',
+        tabBarActiveTintColor: '#1a73e8',
         tabBarInactiveTintColor: 'gray',
         tabBarStyle: [
           {
@@ -96,7 +95,6 @@ export default function App() {
   }
 
   return (
-    // <SafeAreaView>
     <Provider store={store}>
       <NavigationContainer>
         <View onLayout={onLayout} style={{ flex: 1 }}>
@@ -117,7 +115,7 @@ export default function App() {
                 name='main'
                 component={TabNavigator}
                 options={{
-                  title: 'Translator',
+                  title: 'Translate',
                 }}
               />
             </Stack.Group>
@@ -140,7 +138,6 @@ export default function App() {
         </View>
       </NavigationContainer>
     </Provider>
-    // </SafeAreaView>
   );
 }
 
